@@ -31,6 +31,30 @@ services:
     volumes:
       - clickhouse_data:/var/lib/clickhouse
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: analytics_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: analytics_user
+      RABBITMQ_DEFAULT_PASS: analytics_password
+
+  minio:
+    image: minio/minio:latest
+    container_name: analytics_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: analytics_user
+      MINIO_ROOT_PASSWORD: analytics_password
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
 volumes:
   timescale_data:
   clickhouse_data:
+  minio_data:
